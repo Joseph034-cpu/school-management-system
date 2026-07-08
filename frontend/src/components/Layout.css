@@ -1,0 +1,333 @@
+/* ===== LAYOUT STYLES ===== */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: #0d0f14;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid #2a2f38;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    z-index: 100;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #2a2f38;
+    border-radius: 4px;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #00d4ff, #7c3aed);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+}
+
+.sidebar .user-info {
+    text-align: center;
+    padding: 12px;
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.sidebar .user-info .avatar {
+    font-size: 1.5rem;
+}
+
+.sidebar .user-info .username {
+    font-weight: 600;
+    color: #e8e9ea;
+    font-size: 0.9rem;
+}
+
+.sidebar .user-info .role {
+    font-size: 0.7rem;
+    color: #8b92a8;
+    text-transform: uppercase;
+}
+
+.sidebar ul {
+    list-style: none;
+    flex: 1;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 4px;
+}
+
+.sidebar ul li a {
+    color: #8b92a8;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.sidebar ul li a:hover {
+    background: rgba(0, 212, 255, 0.08);
+    color: #00d4ff;
+}
+
+.sidebar ul li a.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(124, 58, 237, 0.15));
+    color: #00d4ff;
+}
+
+.sidebar .logout-btn {
+    color: #ef4444;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    border-top: 1px solid #2a2f38;
+    margin-top: 10px;
+    padding-top: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.sidebar .logout-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 200;
+    background: #1a1d24;
+    border: 1px solid #2a2f38;
+    color: #e8e9ea;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 24px 32px;
+    overflow-y: auto;
+    min-height: 100vh;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 260px;
+        height: 100vh;
+        transition: left 0.3s ease;
+        z-index: 100;
+        border-right: 1px solid #2a2f38;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .sidebar-overlay {
+        display: block;
+    }
+
+    .main-content {
+        padding: 16px;
+        margin-top: 0;
+        padding-top: 60px;
+    }
+
+    .sidebar h2 {
+        font-size: 1.2rem;
+        margin-bottom: 16px;
+    }
+
+    .sidebar ul li a {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 12px;
+        padding-top: 56px;
+    }
+
+    .sidebar {
+        width: 220px;
+        padding: 16px 12px;
+    }
+
+    .sidebar ul li a {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .sidebar .logout-btn {
+        font-size: 0.8rem;
+        padding: 8px 10px;
+    }
+
+    .mobile-menu-btn {
+        padding: 8px 12px;
+        font-size: 16px;
+        top: 8px;
+        left: 8px;
+    }
+}
+
+/* Theme Variables */
+:root {
+    --bg-primary: #0a0c10;
+    --bg-secondary: #1a1d24;
+    --bg-card: #1e2229;
+    --bg-sidebar: #0d0f14;
+    --text-primary: #e8e9ea;
+    --text-secondary: #8b92a8;
+    --border-color: #2a2f38;
+    --accent-primary: #00d4ff;
+}
+
+[data-theme="light"] {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-sidebar: #1e293b;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --border-color: #e2e8f0;
+    --accent-primary: #3b82f6;
+}
+
+/* Apply theme variables */
+.sidebar {
+    background: var(--bg-sidebar) !important;
+    border-right-color: var(--border-color) !important;
+}
+
+.sidebar h2 {
+    color: var(--text-primary) !important;
+}
+
+.sidebar .user-info .username {
+    color: var(--text-primary) !important;
+}
+
+.sidebar .user-info .role {
+    color: var(--text-secondary) !important;
+}
+
+.sidebar ul li a {
+    color: var(--text-secondary) !important;
+}
+
+.sidebar ul li a:hover {
+    color: var(--accent-primary) !important;
+}
+
+.sidebar ul li a.active {
+    color: var(--accent-primary) !important;
+}
+
+.main-content {
+    background: var(--bg-primary) !important;
+}
+
+.main-content h1 {
+    color: var(--text-primary) !important;
+}
+
+.main-content p {
+    color: var(--text-secondary) !important;
+}
+
+.stat-card,
+.card,
+.chart-card,
+.activity-card,
+.day-card,
+.report-card,
+.table-container,
+.form-container {
+    background: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+}
+
+.stat-info h3,
+.stat-info p,
+.card h3,
+.card p,
+.chart-card h3,
+.activity-card h3,
+.day-header h3,
+.report-card h3 {
+    color: var(--text-primary) !important;
+}
+
+.table-container th {
+    color: var(--text-secondary) !important;
+    background: rgba(255,255,255,0.02) !important;
+}
+
+.table-container td {
+    color: var(--text-primary) !important;
+}
+
+.theme-toggle-btn {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
