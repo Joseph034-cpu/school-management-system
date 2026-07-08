@@ -22,7 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-frontend/.env
+.env
 backend/.env
-C:\Users\Joseph\school-portal\frontend\.env
-C:\Users\Joseph\school-portal\backend\.env
+frontend/.env
+.env.local
+.env.production
+.env.development
