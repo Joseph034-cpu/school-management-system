@@ -29,6 +29,7 @@ const mockData = {
     { id: 2, event: 'Mid-Term Exams', date: '2026-07-20' },
   ]
 };
+// Trigger deploy - 2026-07-09
 
 const Dashboard = () => {
     const { user } = useAuth();
