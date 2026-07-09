@@ -60,20 +60,20 @@ const Login = () => {
         setError('');
         setLoading(true);
 
-        if (username === DEMO_CREDENTIALS.admin.email && password === DEMO_CREDENTIALS.admin.password) {
-            localStorage.setItem('user', JSON.stringify({ 
-                name: DEMO_CREDENTIALS.admin.name, 
-                email: DEMO_CREDENTIALS.admin.email,
-                role: DEMO_CREDENTIALS.admin.role,
-                isDemo: true
-            }));
-            localStorage.setItem('userRole', 'admin');
-            localStorage.setItem('loggedInUser', 'admin');
-            alert('✅ Login successful! Welcome Admin!');
-            navigate('/dashboard');
-            setLoading(false);
-            return; 
-        }
+      if (username === DEMO_CREDENTIALS.admin.email && password === DEMO_CREDENTIALS.admin.password) {
+          localStorage.setItem('user', JSON.stringify({ 
+              name: DEMO_CREDENTIALS.admin.name, 
+              email: DEMO_CREDENTIALS.admin.email,
+              role: DEMO_CREDENTIALS.admin.role,
+              isDemo: true
+          }));
+          localStorage.setItem('userRole', 'admin');
+          localStorage.setItem('loggedInUser', 'admin');
+          alert('✅ Login successful! Welcome Admin!');
+          setLoading(false);
+          window.location.href = '/dashboard';
+          return;
+      }
 
         if (username === DEMO_CREDENTIALS.student.email && password === DEMO_CREDENTIALS.student.password) {
             localStorage.setItem('user', JSON.stringify({ 
@@ -85,7 +85,7 @@ const Login = () => {
             localStorage.setItem('userRole', 'student');
             localStorage.setItem('loggedInUser', 'Joseph');
             alert('✅ Login successful! Welcome Student!');
-            navigate('/dashboard');
+            window.location.href = '/dashboard';
             setLoading(false);
             return; 
         }
