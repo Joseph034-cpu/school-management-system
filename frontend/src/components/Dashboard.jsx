@@ -11,95 +11,84 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import './Dashboard.css';
 
+const mockData = {
+  stats: {
+    students: 156,
+    teachers: 24,
+    classes: 12,
+    attendance: '94%'
+  },
+  recentActivity: [
+    { id: 1, action: 'John Doe enrolled in Math', time: '2 hours ago' },
+    { id: 2, action: 'Jane Smith submitted assignment', time: '4 hours ago' },
+    { id: 3, action: 'New teacher added: Mrs. Johnson', time: '1 day ago' },
+    { id: 4, action: 'Student fees updated for 10 students', time: '2 days ago' },
+  ],
+  upcomingEvents: [
+    { id: 1, event: 'Parent-Teacher Meeting', date: '2026-07-15' },
+    { id: 2, event: 'Mid-Term Exams', date: '2026-07-20' },
+  ]
+};
+
 const Dashboard = () => {
     const { user } = useAuth();
     const [stats, setStats] = useState({
-        totalStudents: 0,
-        totalCourses: 0,
-        totalFees: 0,
-        attendanceRate: 0,
-        totalStaff: 0,
-        totalResults: 0
+        totalStudents: mockData.stats.students,
+        totalCourses: 12,
+        totalFees: 45600,
+        attendanceRate: parseInt(mockData.stats.attendance),
+        totalStaff: 24,
+        totalResults: 89
     });
-    const [recentStudents, setRecentStudents] = useState([]);
-    const [recentActivity, setRecentActivity] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [recentStudents, setRecentStudents] = useState([
+        { id: 1, name: 'John Doe', class: '10A' },
+        { id: 2, name: 'Jane Smith', class: '10B' },
+        { id: 3, name: 'Bob Johnson', class: '12A' },
+        { id: 4, name: 'Sarah Williams', class: '11C' },
+        { id: 5, name: 'Michael Brown', class: '9A' }
+    ]);
+    
+    const [recentActivity, setRecentActivity] = useState(mockData.recentActivity);
+        const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchDashboardData();
     }, []);
 
-    const fetchDashboardData = async () => {
-            try {
-                setLoading(true);
-                
-                const role = localStorage.getItem('userRole');
-                const username = localStorage.getItem('loggedInUser');
-                
-                const [studentsRes, coursesRes, feesRes, attendanceRes] = await Promise.all([
-                    students.getAll(),
-                    courses.getAll(),
-                    fees.getAll(),
-                    attendance.getAll()
-                ]);
-
-                let studentData = studentsRes.data || [];
-                let courseData = coursesRes.data || [];
-                let feeData = feesRes.data || [];
-                let attendanceData = attendanceRes.data || [];
-
-                if (role === 'student') {
-                    const studentRecord = studentData.find(s => s.name === username);
-                    
-                    if (studentRecord) {
-                        const studentId = studentRecord.id;
-                        
-                        attendanceData = attendanceData.filter(a => a.student_id === studentId);
-                        
-                        feeData = feeData.filter(f => f.student_id === studentId);
-                        
-                        studentData = studentData.filter(s => s.name === username);
-                    } else {
-                        studentData = [];
-                        attendanceData = [];
-                        feeData = [];
-                    }
-                }
-
-                const totalFees = feeData.reduce((sum, f) => sum + (parseFloat(f.amount) || 0), 0);
-                const presentCount = attendanceData.filter(a => a.status === 'Present').length;
-                const attendanceRate = attendanceData.length ? Math.round((presentCount / attendanceData.length) * 100) : 0;
-
+const fetchDashboardData = async () => {
+        try {
+            setLoading(true);
+            
+            // ===== USE MOCK DATA - NO API CALLS =====
+            // Just simulate loading delay
+            setTimeout(() => {
                 setStats({
-                    totalStudents: studentData.length,
-                    totalCourses: courseData.length,
-                    totalFees: totalFees,
-                    attendanceRate: attendanceRate,
-                    totalStaff: 12,
-                    totalResults: 0
+                    totalStudents: mockData.stats.students,
+                    totalCourses: 12,
+                    totalFees: 45600,
+                    attendanceRate: parseInt(mockData.stats.attendance),
+                    totalStaff: 24,
+                    totalResults: 89
                 });
-
-                setRecentStudents(studentData.slice(-5).reverse());
                 
-                const activities = [];
-                if (studentData.length > 0) {
-                    activities.push(`Welcome back, ${studentData[0]?.name || username}!`);
-                }
-                if (feeData.length > 0) {
-                    activities.push(`Total fees paid: KES ${totalFees.toFixed(2)}`);
-                }
-                if (attendanceData.length > 0) {
-                    const present = attendanceData.filter(a => a.status === 'Present').length;
-                    activities.push(`Attendance: ${present}/${attendanceData.length} present`);
-                }
-                setRecentActivity(activities.slice(0, 5));
+                setRecentStudents([
+                    { id: 1, name: 'John Doe', class: '10A' },
+                    { id: 2, name: 'Jane Smith', class: '10B' },
+                    { id: 3, name: 'Bob Johnson', class: '12A' },
+                    { id: 4, name: 'Sarah Williams', class: '11C' },
+                    { id: 5, name: 'Michael Brown', class: '9A' }
+                ]);
                 
-            } catch (error) {
-                console.error('Error fetching dashboard data:', error);
-            } finally {
+                setRecentActivity(mockData.recentActivity);
                 setLoading(false);
-            }
-        };
+            }, 500);
+            // ===== END MOCK DATA =====
+            
+        } catch (error) {
+            console.error('Error:', error);
+            setLoading(false);
+        }
+    };
 
     if (loading) {
         return <div className="loading">Loading dashboard...</div>;
