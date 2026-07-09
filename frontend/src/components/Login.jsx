@@ -6,8 +6,18 @@ import { faUser, faLock, faEye, faEyeSlash, faGraduationCap, faUniversity } from
 import './Login.css';
 
 const DEMO_CREDENTIALS = {
-  email: 'admin@school.com',
-  password: '@Jozzam10650'
+  admin: {
+    email: 'admin@school.com',
+    password: '@Jozzam10650',
+    name: 'Admin User',
+    role: 'admin'
+  },
+  student: {
+    email: 'Joseph',
+    password: '@Jozzzam10650',
+    name: 'Joseph Student',
+    role: 'student'
+  }
 };
 
 const Login = () => {
@@ -49,22 +59,37 @@ const Login = () => {
         e.preventDefault();
         setError('');
         setLoading(true);
-    
-        if (username === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
+
+        if (username === DEMO_CREDENTIALS.admin.email && password === DEMO_CREDENTIALS.admin.password) {
             localStorage.setItem('user', JSON.stringify({ 
-                name: 'Admin User', 
-                email: 'admin@school.com',
-                role: 'admin',
+                name: DEMO_CREDENTIALS.admin.name, 
+                email: DEMO_CREDENTIALS.admin.email,
+                role: DEMO_CREDENTIALS.admin.role,
                 isDemo: true
             }));
-            
-            alert('✅ Login successful! Welcome to School Management System!');
-            
+            localStorage.setItem('userRole', 'admin');
+            localStorage.setItem('loggedInUser', 'admin');
+            alert('✅ Login successful! Welcome Admin!');
             navigate('/dashboard');
             setLoading(false);
             return; 
         }
 
+        if (username === DEMO_CREDENTIALS.student.email && password === DEMO_CREDENTIALS.student.password) {
+            localStorage.setItem('user', JSON.stringify({ 
+                name: DEMO_CREDENTIALS.student.name, 
+                email: DEMO_CREDENTIALS.student.email,
+                role: DEMO_CREDENTIALS.student.role,
+                isDemo: true
+            }));
+            localStorage.setItem('userRole', 'student');
+            localStorage.setItem('loggedInUser', 'Joseph');
+            alert('✅ Login successful! Welcome Student!');
+            navigate('/dashboard');
+            setLoading(false);
+            return; 
+        }
+      
         try {
             await login(username, password);
             if (rememberMe) {
@@ -198,6 +223,18 @@ const Login = () => {
                 {loading ? <span className="spinner"></span> : 'Login'}
             </button>
 
+            {/* ===== DEMO CREDENTIALS NOTE ===== */}
+            <div className="demo-credentials" style={{ marginTop: '15px', padding: '10px', background: '#f0f8ff', borderRadius: '8px', fontSize: '12px', textAlign: 'center' }}>
+                <p style={{ margin: '0', color: '#333', fontWeight: 'bold' }}>🎓 Demo Credentials:</p>
+                <p style={{ margin: '5px 0', color: '#555' }}>
+                    <strong>Admin:</strong> admin@school.com / @Jozzam10650
+                </p>
+                <p style={{ margin: '0', color: '#555' }}>
+                    <strong>Student:</strong> Joseph / @Jozzzam10650
+                </p>
+            </div>
+            {/* ===== END DEMO CREDENTIALS ===== */}
+
             <div className="login-footer">
                 <p>
                     Don't have an account?{' '}
@@ -322,12 +359,11 @@ const Login = () => {
         </form>
     );
 
-    // ===== RENDER FORGOT PASSWORD =====
     const renderForgotPassword = () => (
         <div className="forgot-container">
             {forgotStep === 1 && (
                 <>
-                    <h3>🔐 Reset Password</h3>
+                    <h3>Reset Password</h3>
                     <p className="forgot-desc">Enter your username to get your security question.</p>
                     <div className="form-group">
                         <label>Username</label>
@@ -359,7 +395,7 @@ const Login = () => {
 
             {forgotStep === 2 && (
                 <>
-                    <h3>🔐 Answer Security Question</h3>
+                    <h3>Answer Security Question</h3>
                     <p className="forgot-desc"><strong>Question:</strong> {securityQuestion}</p>
                     <div className="form-group">
                         <label>Your Answer</label>
