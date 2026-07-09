@@ -5,6 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faEye, faEyeSlash, faGraduationCap, faUniversity } from '@fortawesome/free-solid-svg-icons';
 import './Login.css';
 
+const DEMO_CREDENTIALS = {
+  email: 'admin@school.com',
+  password: '@Jozzam10650'
+};
+
 const Login = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [username, setUsername] = useState('');
@@ -47,7 +52,29 @@ const Login = () => {
         e.preventDefault();
         setError('');
         setLoading(true);
-
+    
+        // ----- ADD THIS DEMO CHECK -----
+        // Check if using demo credentials
+        if (username === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
+            // Save user info (fake session)
+            localStorage.setItem('user', JSON.stringify({ 
+                name: 'Admin User', 
+                email: 'admin@school.com',
+                role: 'admin',
+                isDemo: true
+            }));
+            
+            // Show success message
+            alert('✅ Login successful! Welcome to School Management System!');
+            
+            // Redirect to dashboard
+            navigate('/dashboard');
+            setLoading(false);
+            return; // STOP here - don't try real API
+        }
+        // ----- END DEMO CHECK -----
+    
+        // YOUR ORIGINAL CODE CONTINUES BELOW
         try {
             await login(username, password);
             if (rememberMe) {
