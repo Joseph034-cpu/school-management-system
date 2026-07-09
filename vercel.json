@@ -4,5 +4,14 @@
       "source": "/(.*)",
       "destination": "/frontend/dist/index.html"
     }
+  ],
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
   ]
 }
