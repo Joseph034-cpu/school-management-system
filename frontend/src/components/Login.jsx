@@ -60,20 +60,20 @@ const Login = () => {
         setError('');
         setLoading(true);
 
-      if (username === DEMO_CREDENTIALS.admin.email && password === DEMO_CREDENTIALS.admin.password) {
-          localStorage.setItem('user', JSON.stringify({ 
-              name: DEMO_CREDENTIALS.admin.name, 
-              email: DEMO_CREDENTIALS.admin.email,
-              role: DEMO_CREDENTIALS.admin.role,
-              isDemo: true
-          }));
-          localStorage.setItem('userRole', 'admin');
-          localStorage.setItem('loggedInUser', 'admin');
-          alert('✅ Login successful! Welcome Admin!');
-          setLoading(false);
-          window.location.href = '/dashboard';
-          return;
-      }
+        if (username === DEMO_CREDENTIALS.admin.email && password === DEMO_CREDENTIALS.admin.password) {
+            localStorage.setItem('user', JSON.stringify({ 
+                name: DEMO_CREDENTIALS.admin.name, 
+                email: DEMO_CREDENTIALS.admin.email,
+                role: DEMO_CREDENTIALS.admin.role,
+                isDemo: true
+            }));
+            localStorage.setItem('userRole', 'admin');
+            localStorage.setItem('loggedInUser', 'admin');
+            
+            setLoading(false);
+            window.location.href = '/dashboard';
+            return;
+        }
 
         if (username === DEMO_CREDENTIALS.student.email && password === DEMO_CREDENTIALS.student.password) {
             localStorage.setItem('user', JSON.stringify({ 
@@ -84,12 +84,12 @@ const Login = () => {
             }));
             localStorage.setItem('userRole', 'student');
             localStorage.setItem('loggedInUser', 'Joseph');
-            alert('✅ Login successful! Welcome Student!');
-            window.location.href = '/dashboard';
+            
             setLoading(false);
-            return; 
+            window.location.href = '/dashboard';
+            return;
         }
-      
+
         try {
             await login(username, password);
             if (rememberMe) {
@@ -97,7 +97,7 @@ const Login = () => {
             } else {
                 localStorage.removeItem('rememberedUser');
             }
-            navigate('/dashboard');
+            window.location.href = '/dashboard';
         } catch (err) {
             setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
         } finally {
