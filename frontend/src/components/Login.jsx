@@ -19,7 +19,6 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     
-    // Signup states
     const [signupData, setSignupData] = useState({
         username: '',
         password: '',
@@ -28,7 +27,6 @@ const Login = () => {
         security_answer: ''
     });
     
-    // Forgot password states
     const [forgotStep, setForgotStep] = useState(0);
     const [forgotUsername, setForgotUsername] = useState('');
     const [securityQuestion, setSecurityQuestion] = useState('');
@@ -47,16 +45,12 @@ const Login = () => {
         }
     }, []);
 
-    // ===== LOGIN =====
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
     
-        // ----- ADD THIS DEMO CHECK -----
-        // Check if using demo credentials
         if (username === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
-            // Save user info (fake session)
             localStorage.setItem('user', JSON.stringify({ 
                 name: 'Admin User', 
                 email: 'admin@school.com',
@@ -64,17 +58,13 @@ const Login = () => {
                 isDemo: true
             }));
             
-            // Show success message
             alert('✅ Login successful! Welcome to School Management System!');
             
-            // Redirect to dashboard
             navigate('/dashboard');
             setLoading(false);
-            return; // STOP here - don't try real API
+            return; 
         }
-        // ----- END DEMO CHECK -----
-    
-        // YOUR ORIGINAL CODE CONTINUES BELOW
+
         try {
             await login(username, password);
             if (rememberMe) {
@@ -90,7 +80,6 @@ const Login = () => {
         }
     };
 
-    // ===== SIGNUP (Student Only) =====
     const handleSignup = async (e) => {
         e.preventDefault();
         setError('');
@@ -108,7 +97,6 @@ const Login = () => {
         }
     };
 
-    // ===== FORGOT PASSWORD - Step 1: Get Security Question =====
     const handleGetSecurityQuestion = async () => {
         setError('');
         setLoading(true);
@@ -124,7 +112,6 @@ const Login = () => {
         }
     };
 
-    // ===== FORGOT PASSWORD - Step 2: Verify Answer & Reset =====
     const handleResetPassword = async () => {
         setError('');
         setLoading(true);
@@ -143,7 +130,6 @@ const Login = () => {
         }
     };
 
-    // ===== RENDER LOGIN FORM =====
     const renderLoginForm = () => (
         <form onSubmit={handleLogin}>
             <div className="form-group">
