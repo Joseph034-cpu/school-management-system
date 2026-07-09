@@ -58,9 +58,6 @@ const Dashboard = () => {
 const fetchDashboardData = async () => {
         try {
             setLoading(true);
-            
-            // ===== USE MOCK DATA - NO API CALLS =====
-            // Just simulate loading delay
             setTimeout(() => {
                 setStats({
                     totalStudents: mockData.stats.students,
@@ -82,7 +79,6 @@ const fetchDashboardData = async () => {
                 setRecentActivity(mockData.recentActivity);
                 setLoading(false);
             }, 500);
-            // ===== END MOCK DATA =====
             
         } catch (error) {
             console.error('Error:', error);
