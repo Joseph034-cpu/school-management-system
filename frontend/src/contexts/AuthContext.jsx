@@ -1,25 +1,38 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import api from '../services/api';
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
+
+// Demo credentials
+const DEMO_CREDENTIALS = {
+  admin: {
+    username: 'admin@school.com',
+    password: '@Jozzam10650',
+    name: 'Admin User',
+    role: 'admin'
+  },
+  student: {
+    username: 'Joseph',
+    password: '@Jozzzam10650',
+    name: 'Joseph Student',
+    role: 'student'
+  }
+};
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        // Check if user is already logged in
         const userData = localStorage.getItem('user');
         
-        if (token && userData) {
+        if (userData) {
             try {
                 const parsedUser = JSON.parse(userData);
                 setUser(parsedUser);
-                api.defaults.headers.Authorization = `Bearer ${token}`;
             } catch (e) {
-                localStorage.removeItem('token');
                 localStorage.removeItem('user');
             }
         }
@@ -27,36 +40,81 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (username, password) => {
-        const response = await api.post('/auth/login', { username, password });
-        const { token, user } = response.data;
-        
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        api.defaults.headers.Authorization = `Bearer ${token}`;
-        setUser(user);
-        
-        return user;
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // Check admin credentials
+        if (username === DEMO_CREDENTIALS.admin.username && password === DEMO_CREDENTIALS.admin.password) {
+            const userData = {
+                name: DEMO_CREDENTIALS.admin.name,
+                email: DEMO_CREDENTIALS.admin.username,
+                role: DEMO_CREDENTIALS.admin.role,
+                isDemo: true
+            };
+            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('userRole', 'admin');
+            localStorage.setItem('loggedInUser', 'admin');
+            setUser(userData);
+            return userData;
+        }
+
+        // Check student credentials
+        if (username === DEMO_CREDENTIALS.student.username && password === DEMO_CREDENTIALS.student.password) {
+            const userData = {
+                name: DEMO_CREDENTIALS.student.name,
+                email: DEMO_CREDENTIALS.student.username,
+                role: DEMO_CREDENTIALS.student.role,
+                isDemo: true
+            };
+            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('userRole', 'student');
+            localStorage.setItem('loggedInUser', 'Joseph');
+            setUser(userData);
+            return userData;
+        }
+
+        // Invalid credentials
+        throw new Error('Invalid credentials. Please use the demo credentials.');
     };
 
     const signup = async (userData) => {
-        const response = await api.post('/auth/signup', userData);
-        return response.data;
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // Demo signup - just return success
+        return { 
+            message: 'Account created successfully! Please login with your credentials.',
+            user: userData
+        };
     };
 
     const getSecurityQuestion = async (data) => {
-        const response = await api.post('/auth/security-question', data);
-        return response;
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Return a demo security question
+        return {
+            data: {
+                security_question: 'What is your favorite color? (Demo Question)'
+            }
+        };
     };
 
     const resetPassword = async (data) => {
-        const response = await api.post('/auth/reset-password', data);
-        return response.data;
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Demo password reset - always succeeds
+        return {
+            message: 'Password reset successful! Please login with your new password.'
+        };
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
         localStorage.removeItem('user');
-        delete api.defaults.headers.Authorization;
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('loggedInUser');
+        localStorage.removeItem('rememberedUser');
         setUser(null);
     };
 
