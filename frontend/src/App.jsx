@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Login';
 import Layout from './components/Layout';
@@ -27,27 +27,25 @@ const ProtectedRoute = ({ children }) => {
 function App() {
     return (
         <AuthProvider>
-            <Router>
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/" element={
-                        <ProtectedRoute>
-                            <Layout />
-                        </ProtectedRoute>
-                    }>
-                        <Route index element={<Navigate to="/dashboard" />} />
-                        <Route path="dashboard" element={<Dashboard />} />
-                        <Route path="students" element={<Students />} />
-                        <Route path="courses" element={<Courses />} />
-                        <Route path="attendance" element={<Attendance />} />
-                        <Route path="fees" element={<Fees />} />
-                        <Route path="results" element={<Results />} />
-                        <Route path="timetable" element={<Timetable />} />
-                        <Route path="reports" element={<Reports />} />
-                        <Route path="manage-users" element={<ManageUsers />} />
-                    </Route>
-                </Routes>
-            </Router>
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/" element={
+                    <ProtectedRoute>
+                        <Layout />
+                    </ProtectedRoute>
+                }>
+                    <Route index element={<Navigate to="/dashboard" />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="students" element={<Students />} />
+                    <Route path="courses" element={<Courses />} />
+                    <Route path="attendance" element={<Attendance />} />
+                    <Route path="fees" element={<Fees />} />
+                    <Route path="results" element={<Results />} />
+                    <Route path="timetable" element={<Timetable />} />
+                    <Route path="reports" element={<Reports />} />
+                    <Route path="manage-users" element={<ManageUsers />} />
+                </Route>
+            </Routes>
         </AuthProvider>
     );
 }
