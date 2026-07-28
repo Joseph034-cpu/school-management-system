@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faEye, faEyeSlash, faGraduationCap, faUniversity } from '@fortawesome/free-solid-svg-icons';
@@ -7,13 +6,13 @@ import './Login.css';
 
 const DEMO_CREDENTIALS = {
   admin: {
-    email: 'admin@school.com',
+    username: 'admin@school.com',
     password: '@Jozzam10650',
     name: 'Admin User',
     role: 'admin'
   },
   student: {
-    email: 'Joseph',
+    username: 'Joseph',
     password: '@Jozzzam10650',
     name: 'Joseph Student',
     role: 'student'
@@ -37,14 +36,6 @@ const Login = () => {
         security_answer: ''
     });
     
-    const [forgotStep, setForgotStep] = useState(0);
-    const [forgotUsername, setForgotUsername] = useState('');
-    const [securityQuestion, setSecurityQuestion] = useState('');
-    const [securityAnswer, setSecurityAnswer] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [forgotMessage, setForgotMessage] = useState('');
-    
-    const { login, signup, resetPassword, getSecurityQuestion } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -60,49 +51,56 @@ const Login = () => {
         setError('');
         setLoading(true);
 
-        if (username === DEMO_CREDENTIALS.admin.email && password === DEMO_CREDENTIALS.admin.password) {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // Check admin credentials
+        if (username === DEMO_CREDENTIALS.admin.username && password === DEMO_CREDENTIALS.admin.password) {
             localStorage.setItem('user', JSON.stringify({ 
                 name: DEMO_CREDENTIALS.admin.name, 
-                email: DEMO_CREDENTIALS.admin.email,
+                email: DEMO_CREDENTIALS.admin.username,
                 role: DEMO_CREDENTIALS.admin.role,
                 isDemo: true
             }));
             localStorage.setItem('userRole', 'admin');
             localStorage.setItem('loggedInUser', 'admin');
             
+            if (rememberMe) {
+                localStorage.setItem('rememberedUser', username);
+            } else {
+                localStorage.removeItem('rememberedUser');
+            }
+            
             setLoading(false);
-            window.location.href = '/dashboard';
+            navigate('/dashboard');
             return;
         }
 
-        if (username === DEMO_CREDENTIALS.student.email && password === DEMO_CREDENTIALS.student.password) {
+        // Check student credentials
+        if (username === DEMO_CREDENTIALS.student.username && password === DEMO_CREDENTIALS.student.password) {
             localStorage.setItem('user', JSON.stringify({ 
                 name: DEMO_CREDENTIALS.student.name, 
-                email: DEMO_CREDENTIALS.student.email,
+                email: DEMO_CREDENTIALS.student.username,
                 role: DEMO_CREDENTIALS.student.role,
                 isDemo: true
             }));
             localStorage.setItem('userRole', 'student');
             localStorage.setItem('loggedInUser', 'Joseph');
             
-            setLoading(false);
-            window.location.href = '/dashboard';
-            return;
-        }
-
-        try {
-            await login(username, password);
             if (rememberMe) {
                 localStorage.setItem('rememberedUser', username);
             } else {
                 localStorage.removeItem('rememberedUser');
             }
-            window.location.href = '/dashboard';
-        } catch (err) {
-            setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
-        } finally {
+            
             setLoading(false);
+            navigate('/dashboard');
+            return;
         }
+
+        // Invalid credentials
+        setError('Invalid credentials. Please use the demo credentials shown below.');
+        setLoading(false);
     };
 
     const handleSignup = async (e) => {
@@ -110,49 +108,14 @@ const Login = () => {
         setError('');
         setLoading(true);
 
-        try {
-            await signup(signupData);
-            setError('✅ Account created successfully! Please login.');
-            setIsLogin(true);
-            setSignupData({ username: '', password: '', full_name: '', security_question: '', security_answer: '' });
-        } catch (err) {
-            setError(err.response?.data?.message || 'Signup failed. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 800));
 
-    const handleGetSecurityQuestion = async () => {
-        setError('');
-        setLoading(true);
-        try {
-            const response = await getSecurityQuestion({ username: forgotUsername });
-            setSecurityQuestion(response.data.security_question);
-            setForgotStep(2);
-            setForgotMessage('Please answer your security question.');
-        } catch (err) {
-            setError(err.response?.data?.message || 'User not found.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleResetPassword = async () => {
-        setError('');
-        setLoading(true);
-        try {
-            await resetPassword({
-                username: forgotUsername,
-                securityAnswer: securityAnswer,
-                newPassword: newPassword
-            });
-            setForgotMessage('✅ Password reset successfully! Please login.');
-            setForgotStep(3);
-        } catch (err) {
-            setError(err.response?.data?.message || 'Invalid answer. Please try again.');
-        } finally {
-            setLoading(false);
-        }
+        // Demo signup - just show success message
+        setError('✅ Demo: Account creation simulated! Please login with your new credentials.');
+        setIsLogin(true);
+        setSignupData({ username: '', password: '', full_name: '', security_question: '', security_answer: '' });
+        setLoading(false);
     };
 
     const renderLoginForm = () => (
@@ -201,39 +164,22 @@ const Login = () => {
                 </label>
             </div>
 
-            <div style={{ textAlign: 'right', marginBottom: '12px' }}>
-                <span 
-                    className="forgot-link"
-                    onClick={(e) => { 
-                        e.preventDefault(); 
-                        setForgotStep(1); 
-                        setForgotMessage(''); 
-                        setError(''); 
-                        setIsLogin(false); 
-                    }}
-                    style={{ cursor: 'pointer', fontSize: '12px', color: '#00d4ff' }}
-                >
-                    Forgot Password?
-                </span>
-            </div>
-
             {error && <div className="error-message">{error}</div>}
 
             <button type="submit" className="login-btn" disabled={loading}>
                 {loading ? <span className="spinner"></span> : 'Login'}
             </button>
 
-            {/* ===== DEMO CREDENTIALS NOTE ===== */}
-            <div className="demo-credentials" style={{ marginTop: '15px', padding: '10px', background: '#f0f8ff', borderRadius: '8px', fontSize: '12px', textAlign: 'center' }}>
-                <p style={{ margin: '0', color: '#333', fontWeight: 'bold' }}>🎓 Demo Credentials:</p>
-                <p style={{ margin: '5px 0', color: '#555' }}>
-                    <strong>Admin:</strong> admin@school.com / @Jozzam10650
+            {/* Demo Credentials */}
+            <div className="demo-credentials" style={{ marginTop: '15px', padding: '12px', background: '#f0f8ff', borderRadius: '8px', fontSize: '13px', textAlign: 'center', border: '1px solid #b8d4e3' }}>
+                <p style={{ margin: '0', color: '#0066cc', fontWeight: 'bold' }}>🎓 Demo Credentials (Use these to login)</p>
+                <p style={{ margin: '5px 0', color: '#333' }}>
+                    <strong>👤 Admin:</strong> admin@school.com / @Jozzam10650
                 </p>
-                <p style={{ margin: '0', color: '#555' }}>
-                    <strong>Student:</strong> Joseph / @Jozzzam10650
+                <p style={{ margin: '0', color: '#333' }}>
+                    <strong>👤 Student:</strong> Joseph / @Jozzzam10650
                 </p>
             </div>
-            {/* ===== END DEMO CREDENTIALS ===== */}
 
             <div className="login-footer">
                 <p>
@@ -247,14 +193,13 @@ const Login = () => {
                         }}
                         style={{ cursor: 'pointer', color: '#00d4ff' }}
                     >
-                        Sign Up
+                        Sign Up (Demo)
                     </span>
                 </p>
             </div>
         </form>
     );
 
-    // ===== RENDER SIGNUP FORM (Student Only) =====
     const renderSignupForm = () => (
         <form onSubmit={handleSignup}>
             <div className="form-group">
@@ -337,7 +282,7 @@ const Login = () => {
             {error && <div className="error-message">{error}</div>}
 
             <button type="submit" className="login-btn" disabled={loading}>
-                {loading ? <span className="spinner"></span> : 'Create Student Account'}
+                {loading ? <span className="spinner"></span> : 'Create Student Account (Demo)'}
             </button>
 
             <div className="login-footer">
@@ -350,7 +295,7 @@ const Login = () => {
                             setIsLogin(true); 
                             setError(''); 
                         }}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', color: '#00d4ff' }}
                     >
                         Login
                     </span>
@@ -359,129 +304,8 @@ const Login = () => {
         </form>
     );
 
-    const renderForgotPassword = () => (
-        <div className="forgot-container">
-            {forgotStep === 1 && (
-                <>
-                    <h3>Reset Password</h3>
-                    <p className="forgot-desc">Enter your username to get your security question.</p>
-                    <div className="form-group">
-                        <label>Username</label>
-                        <div className="input-group">
-                            <span className="input-icon">
-                                <FontAwesomeIcon icon={faUser} />
-                            </span>
-                            <input
-                                type="text"
-                                placeholder="Enter your username"
-                                value={forgotUsername}
-                                onChange={(e) => setForgotUsername(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-                    {error && <div className="error-message">{error}</div>}
-                    {forgotMessage && <div className="success-message">{forgotMessage}</div>}
-                    <button 
-                        type="button" 
-                        className="login-btn" 
-                        onClick={handleGetSecurityQuestion}
-                        disabled={loading}
-                    >
-                        {loading ? <span className="spinner"></span> : 'Get Security Question'}
-                    </button>
-                </>
-            )}
-
-            {forgotStep === 2 && (
-                <>
-                    <h3>Answer Security Question</h3>
-                    <p className="forgot-desc"><strong>Question:</strong> {securityQuestion}</p>
-                    <div className="form-group">
-                        <label>Your Answer</label>
-                        <div className="input-group">
-                            <span className="input-icon">
-                                <FontAwesomeIcon icon={faLock} />
-                            </span>
-                            <input
-                                type="text"
-                                placeholder="Enter your answer"
-                                value={securityAnswer}
-                                onChange={(e) => setSecurityAnswer(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label>New Password</label>
-                        <div className="input-group">
-                            <span className="input-icon">
-                                <FontAwesomeIcon icon={faLock} />
-                            </span>
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                placeholder="Enter new password"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                                required
-                            />
-                            <button
-                                type="button"
-                                className="password-toggle"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                            </button>
-                        </div>
-                    </div>
-                    {error && <div className="error-message">{error}</div>}
-                    {forgotMessage && <div className="success-message">{forgotMessage}</div>}
-                    <button 
-                        type="button" 
-                        className="login-btn" 
-                        onClick={handleResetPassword}
-                        disabled={loading}
-                    >
-                        {loading ? <span className="spinner"></span> : 'Reset Password'}
-                    </button>
-                </>
-            )}
-
-            {forgotStep === 3 && (
-                <>
-                    <h3>✅ Password Reset Complete</h3>
-                    <p className="forgot-desc">{forgotMessage}</p>
-                    <button 
-                        type="button" 
-                        className="login-btn" 
-                        onClick={() => { setForgotStep(1); setIsLogin(true); setForgotMessage(''); setError(''); }}
-                    >
-                        Back to Login
-                    </button>
-                </>
-            )}
-
-            <div className="login-footer">
-            <span 
-                className="link-btn"
-                onClick={(e) => { 
-                    e.preventDefault(); 
-                    setForgotStep(0); 
-                    setIsLogin(true); 
-                    setForgotMessage(''); 
-                    setError(''); 
-                }}
-                style={{ cursor: 'pointer' }}
-            >
-                ← Back to Login
-            </span>
-            </div>
-        </div>
-    );
-
     return (
         <div className="login-page">
-
             <div className="login-container">
                 <div className="login-card">
                     <div className="login-brand">
@@ -490,23 +314,15 @@ const Login = () => {
                         </div>
                         <h1 style={{ fontSize: '18px', lineHeight: '1.2' }}>Student Management System Portal</h1>
                         <p className="brand-subtitle">
-                            {forgotStep === 1 || forgotStep === 2 || forgotStep === 3 ? (
-                                'Reset Your Password'
-                            ) : isLogin ? (
+                            {isLogin ? (
                                 'Welcome back. Access academic records, attendance, course management, fee tracking, and institutional reports from a single secure university platform.'
                             ) : (
-                                'Create your student account'
+                                'Create your student account (Demo)'
                             )}
                         </p>
                     </div>
 
-                    {forgotStep === 1 || forgotStep === 2 || forgotStep === 3 ? (
-                        renderForgotPassword()
-                    ) : isLogin ? (
-                        renderLoginForm()
-                    ) : (
-                        renderSignupForm()
-                    )}
+                    {isLogin ? renderLoginForm() : renderSignupForm()}
                 </div>
             </div>
         </div>
