@@ -39,24 +39,27 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    const login = async (username, password) => {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 800));
+const login = async (username, password) => {
+    console.log('🔑 Login attempt for:', username);
+    
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 800));
 
-        // Check admin credentials
-        if (username === DEMO_CREDENTIALS.admin.username && password === DEMO_CREDENTIALS.admin.password) {
-            const userData = {
-                name: DEMO_CREDENTIALS.admin.name,
-                email: DEMO_CREDENTIALS.admin.username,
-                role: DEMO_CREDENTIALS.admin.role,
-                isDemo: true
-            };
-            localStorage.setItem('user', JSON.stringify(userData));
-            localStorage.setItem('userRole', 'admin');
-            localStorage.setItem('loggedInUser', 'admin');
-            setUser(userData);
-            return userData;
-        }
+    // Check admin credentials
+    if (username === DEMO_CREDENTIALS.admin.username && password === DEMO_CREDENTIALS.admin.password) {
+        const userData = {
+            name: DEMO_CREDENTIALS.admin.name,
+            email: DEMO_CREDENTIALS.admin.username,
+            role: DEMO_CREDENTIALS.admin.role,
+            isDemo: true
+        };
+        console.log('✅ Admin login successful:', userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('loggedInUser', 'admin');
+        setUser(userData);
+        return userData;
+    }
 
         // Check student credentials
         if (username === DEMO_CREDENTIALS.student.username && password === DEMO_CREDENTIALS.student.password) {
