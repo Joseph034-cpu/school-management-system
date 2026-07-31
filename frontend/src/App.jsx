@@ -19,8 +19,15 @@ import './components/Layout.css';
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
     
+    console.log('🛡️ ProtectedRoute - user:', user);
+    console.log('🛡️ ProtectedRoute - loading:', loading);
+    
     if (loading) return <div className="loading">Loading...</div>;
-    if (!user) return <Navigate to="/login" />;
+    if (!user) {
+        console.log('🚫 No user, redirecting to login');
+        return <Navigate to="/login" />;
+    }
+    console.log('✅ User authenticated, showing protected content');
     return children;
 };
 
