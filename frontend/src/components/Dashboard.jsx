@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { students, courses, fees, attendance } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -11,8 +10,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import './Dashboard.css';
 
-//redeploy
-
 const mockData = {
   stats: {
     students: 156,
@@ -21,17 +18,16 @@ const mockData = {
     attendance: '94%'
   },
   recentActivity: [
-    { id: 1, action: 'John Doe enrolled in Math', time: '2 hours ago' },
-    { id: 2, action: 'Jane Smith submitted assignment', time: '4 hours ago' },
-    { id: 3, action: 'New teacher added: Mrs. Johnson', time: '1 day ago' },
-    { id: 4, action: 'Student fees updated for 10 students', time: '2 days ago' },
+    'John Doe enrolled in Math',
+    'Jane Smith submitted assignment',
+    'New teacher added: Mrs. Johnson',
+    'Student fees updated for 10 students',
   ],
   upcomingEvents: [
     { id: 1, event: 'Parent-Teacher Meeting', date: '2026-07-15' },
     { id: 2, event: 'Mid-Term Exams', date: '2026-07-20' },
   ]
 };
-// Trigger deploy - 2026-07-09
 
 const Dashboard = () => {
     const { user } = useAuth();
@@ -44,21 +40,21 @@ const Dashboard = () => {
         totalResults: 89
     });
     const [recentStudents, setRecentStudents] = useState([
-        { id: 1, name: 'John Doe', class: '10A' },
-        { id: 2, name: 'Jane Smith', class: '10B' },
-        { id: 3, name: 'Bob Johnson', class: '12A' },
-        { id: 4, name: 'Sarah Williams', class: '11C' },
-        { id: 5, name: 'Michael Brown', class: '9A' }
+        { id: 1, name: 'John Doe', course: 'Computer Science' },
+        { id: 2, name: 'Jane Smith', course: 'Engineering' },
+        { id: 3, name: 'Bob Johnson', course: 'Business' },
+        { id: 4, name: 'Sarah Williams', course: 'Medicine' },
+        { id: 5, name: 'Michael Brown', course: 'Computer Science' }
     ]);
     
     const [recentActivity, setRecentActivity] = useState(mockData.recentActivity);
-        const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchDashboardData();
     }, []);
 
-const fetchDashboardData = async () => {
+    const fetchDashboardData = async () => {
         try {
             setLoading(true);
             setTimeout(() => {
@@ -72,11 +68,11 @@ const fetchDashboardData = async () => {
                 });
                 
                 setRecentStudents([
-                    { id: 1, name: 'John Doe', class: '10A' },
-                    { id: 2, name: 'Jane Smith', class: '10B' },
-                    { id: 3, name: 'Bob Johnson', class: '12A' },
-                    { id: 4, name: 'Sarah Williams', class: '11C' },
-                    { id: 5, name: 'Michael Brown', class: '9A' }
+                    { id: 1, name: 'John Doe', course: 'Computer Science' },
+                    { id: 2, name: 'Jane Smith', course: 'Engineering' },
+                    { id: 3, name: 'Bob Johnson', course: 'Business' },
+                    { id: 4, name: 'Sarah Williams', course: 'Medicine' },
+                    { id: 5, name: 'Michael Brown', course: 'Computer Science' }
                 ]);
                 
                 setRecentActivity(mockData.recentActivity);
@@ -99,7 +95,7 @@ const fetchDashboardData = async () => {
             <div className="dashboard-header">
                 <div>
                     <h1>Dashboard</h1>
-                    <p>Welcome back, {user?.full_name || user?.username}!</p>
+                    <p>Welcome back, {user?.name || user?.username || 'User'}!</p>
                 </div>
                 <div className="dashboard-actions">
                     <button className="btn btn-primary">
@@ -111,7 +107,7 @@ const fetchDashboardData = async () => {
                 </div>
             </div>
 
-            {/* Stats Cards - Font Awesome Icons */}
+            {/* Stats Cards */}
             <div className="stats-grid">
                 <div className="stat-card">
                     <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #00d4ff, #7c3aed)' }}>
@@ -254,7 +250,7 @@ const fetchDashboardData = async () => {
                 </div>
             </div>
 
-            {/* Quick Actions - Font Awesome Icons */}
+            {/* Quick Actions */}
             <div className="quick-actions">
                 <h3>Quick Actions</h3>
                 <div className="action-grid">
