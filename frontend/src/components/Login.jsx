@@ -72,8 +72,6 @@ const Login = () => {
             }
             
             setLoading(false);
-          console.log('✅ Login successful! User data:', localStorage.getItem('user'));
-console.log('🔄 Redirecting to /dashboard...');
             navigate('/dashboard');
             return;
         }
