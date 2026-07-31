@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,6 +13,13 @@ const Layout = () => {
     const { user, logout } = useAuth();
     const location = useLocation();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [theme, setTheme] = useState('dark');
+
+    useEffect(() => {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    }, []);
 
     const handleLogout = () => {
         if (window.confirm('Are you sure you want to logout?')) {
@@ -21,16 +28,10 @@ const Layout = () => {
     };
 
     const toggleTheme = () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        const newTheme = theme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-        
-        // Update button text
-        const btn = document.querySelector('.theme-toggle-btn');
-        if (btn) {
-            btn.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
-        }
     };
 
     const menuItems = {
@@ -84,8 +85,8 @@ const Layout = () => {
                 <h2>SMS Portal</h2>
                 <div className="user-info">
                     <div className="avatar">👤</div>
-                    <div className="username">{user?.username}</div>
-                    <div className="role">{user?.role?.toUpperCase()}</div>
+                    <div className="username">{user?.username || user?.name || 'User'}</div>
+                    <div className="role">{user?.role?.toUpperCase() || 'USER'}</div>
                 </div>
 
                 <div className="theme-toggle-container" style={{ marginBottom: '16px', textAlign: 'center' }}>
@@ -104,7 +105,7 @@ const Layout = () => {
                             transition: 'all 0.3s ease'
                         }}
                     >
-                        {document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
+                        {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
                     </button>
                 </div>
                 <ul>
