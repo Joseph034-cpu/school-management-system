@@ -1,43 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Login';
+import Layout from './components/Layout';
+import Dashboard from './components/Dashboard';
+import Students from './components/Students';
+import Courses from './components/Courses';
+import Attendance from './components/Attendance';
+import Fees from './components/Fees';
+import Results from './components/Results';
+import Timetable from './components/Timetable';
+import Reports from './components/Reports';
+import ManageUsers from './components/ManageUsers';
 import './App.css';
-
-// Simple test dashboard
-const TestDashboard = () => {
-    const { user, logout } = useAuth();
-    return (
-        <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column',
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            height: '100vh',
-            color: 'white',
-            background: '#1a1a2e',
-            padding: '20px'
-        }}>
-            <h1 style={{ fontSize: '32px', marginBottom: '20px' }}>✅ Dashboard Working!</h1>
-            <p style={{ fontSize: '18px', marginBottom: '10px' }}>Welcome, {user?.name || 'User'}!</p>
-            <p style={{ fontSize: '16px', color: '#888', marginBottom: '20px' }}>Role: {user?.role || 'Unknown'}</p>
-            <button 
-                onClick={logout}
-                style={{
-                    padding: '10px 30px',
-                    fontSize: '16px',
-                    background: '#e74c3c',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer'
-                }}
-            >
-                Logout
-            </button>
-        </div>
-    );
-};
+import './responsive.css';
+import './components/Layout.css';
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -54,11 +31,19 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={
                     <ProtectedRoute>
-                        <TestDashboard />
+                        <Layout />
                     </ProtectedRoute>
                 }>
                     <Route index element={<Navigate to="/dashboard" />} />
-                    <Route path="dashboard" element={<TestDashboard />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="students" element={<Students />} />
+                    <Route path="courses" element={<Courses />} />
+                    <Route path="attendance" element={<Attendance />} />
+                    <Route path="fees" element={<Fees />} />
+                    <Route path="results" element={<Results />} />
+                    <Route path="timetable" element={<Timetable />} />
+                    <Route path="reports" element={<Reports />} />
+                    <Route path="manage-users" element={<ManageUsers />} />
                 </Route>
             </Routes>
         </AuthProvider>
